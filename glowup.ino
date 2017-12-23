@@ -73,14 +73,15 @@ void setup() {
 
     Serial.println("Starting dmx");
     DmxMaster.usePin(3);
-    DmxMaster.write(1, 255); DmxMaster.write(2, 255); //first light red
+    DmxMaster.write(1, 255); DmxMaster.write(5, 255); //first light red
     delay(1000);
 
     Serial.print("Initializing "); Serial.print(NUMPIXELS); Serial.println(" lights");
     for ( int i=0; i<NUMPIXELS; i++ ) {
         DmxMaster.write(i*7+1, 255); //100% brightness
-        DmxMaster.write(i*7+5, 0); //no strobe
-        DmxMaster.write(i*7+6, 0); //no effect
+        DmxMaster.write(i*7+2, 0); //no strobe
+        DmxMaster.write(i*7+3, 0); //no effect
+        DmxMaster.write(i*7+4, 0); //no speed
     }
 
     Serial.println("Doing fastled shit");
@@ -161,9 +162,9 @@ void loop() {
     }
 
     for ( int i=0; i<NUMPIXELS; i++ ) {
-        DmxMaster.write(i*7+2, leds[i].r);
-        DmxMaster.write(i*7+3, leds[i].g);
-        DmxMaster.write(i*7+4, leds[i].b);
+        DmxMaster.write(i*7+5, leds[i].r);
+        DmxMaster.write(i*7+6, leds[i].g);
+        DmxMaster.write(i*7+7, leds[i].b);
     }
 }
 
