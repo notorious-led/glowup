@@ -1,11 +1,17 @@
 #include <DmxMaster.h>
 #include <FastLED.h>
+#include <Cmd.h>
 
 #define NUMPIXELS 48
-#define DEBUG true
+//#define DEBUG true
 #define FRAMERATE 60
 
 CRGB leds[NUMPIXELS];
+uint8_t brightness[NUMPIXELS];
+uint8_t strobe[NUMPIXELS];
+uint8_t voice[NUMPIXELS];
+uint8_t speed[NUMPIXELS];
+
 unsigned long frameCount;
 unsigned long timer1s;
 
@@ -69,12 +75,11 @@ uint8_t ledlen;                                               // Length of a fla
 void setup() {
     Serial.begin(9600);
     Serial.println("glowup");
-    delay(1000);
+    delay(500);
 
     Serial.println("Starting dmx");
     DmxMaster.usePin(3);
     DmxMaster.write(1, 255); DmxMaster.write(5, 255); //first light red
-    delay(1000);
 
     Serial.print("Initializing "); Serial.print(NUMPIXELS); Serial.println(" lights");
     for ( int i=0; i<NUMPIXELS; i++ ) {
@@ -87,6 +92,15 @@ void setup() {
     Serial.println("Doing fastled shit");
     FastLED.setMaxRefreshRate(FRAMERATE);
     leds[0] = CRGB::Green;
+
+    Serial.println("Starting command line");
+    cmdInit(&Serial);
+    cmdAdd("e", cmdEffect);
+    cmdAdd("b", cmdSetting);
+    cmdAdd("f", cmdSetting);
+    cmdAdd("v", cmdSetting);
+    cmdAdd("s", cmdSetting);
+    cmdAdd("c", cmdColor);
 
     Serial.println("Init done!");
 
@@ -162,10 +176,54 @@ void loop() {
     }
 
     for ( int i=0; i<NUMPIXELS; i++ ) {
+        DmxMaster.write(i*7+1, brightness[i]);
+        DmxMaster.write(i*7+2, strobe[i]);
+        DmxMaster.write(i*7+3, voice[i]);
+        DmxMaster.write(i*7+4, speed[i]);
+
         DmxMaster.write(i*7+5, leds[i].r);
         DmxMaster.write(i*7+6, leds[i].g);
         DmxMaster.write(i*7+7, leds[i].b);
     }
+
+    cmdPoll();
+
+}
+
+void cmdSetting(int argc, char ** argv) {
+    if ( argc > 1 ) {
+        uint8_t x = String(argv[1]).toInt();
+        for ( int i=0; i<NUMPIXELS; i++ ) {
+            switch(argv[0][0]) {
+                case 'b':
+                    brightness[i] = x;
+                    break;
+                case 'f':
+                    strobe[i] = x;
+                    break;
+                case 'v':
+                    voice[i] = x;
+                    break;
+                case 's':
+                    speed[i] = x;
+                    break;
+            }
+        }
+                    
+        Serial.println(x);
+    }
+}
+void cmdColor(int argc, char ** argv) {
+    if ( argc > 3 ) {
+        color = CRGB(String(argv[1]).toInt(), String(argv[2]).toInt(), String(argv[3]).toInt());
+        Serial.print(color.r); Serial.print(","); Serial.print(color.g); Serial.print(","); Serial.println(color.b);
+    }
+}
+void cmdEffect(int argc, char ** argv) {
+    if ( argc > 1 ) {
+        effect = String(argv[1]).toInt();
+    }
+    Serial.println(effect);
 }
 
 
