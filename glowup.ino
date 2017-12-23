@@ -32,8 +32,15 @@ DEFINE_GRADIENT_PALETTE( flame_gp ) {
   165, 213, 66,  1,
   255, 252, 42,  1
 };
+DEFINE_GRADIENT_PALETTE( christmas_gp ) {
+    0,   0,  0,  0,
+  127,   0,255,  0,
+    0,   0,  0,  0,
+  255, 255,  0,  0, 
+    0,   0,  0,  0
+};
 
-CRGBPalette16 currentPalette = flame_gp;
+CRGBPalette16 currentPalette = christmas_gp;
 
 //BlinkOne/SolidOne
 uint8_t offset = 0; //how many to skip when writing the LED.
