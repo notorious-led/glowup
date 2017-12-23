@@ -2,7 +2,7 @@
 #include <FastLED.h>
 #include <Cmd.h>
 
-#define NUMPIXELS 48
+#define NUMPIXELS 23
 //#define DEBUG true
 #define FRAMERATE 60
 
