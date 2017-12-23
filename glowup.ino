@@ -187,6 +187,13 @@ void loop() {
             delay(10);
     }
 
+    dmxBlit();
+
+    cmdPoll();
+
+}
+
+void dmxBlit() {
     for ( int i=0; i<NUMPIXELS; i++ ) {
         DmxMaster.write(i*7+1, brightness[i]);
         DmxMaster.write(i*7+2, strobe[i]);
@@ -197,9 +204,6 @@ void loop() {
         DmxMaster.write(i*7+6, leds[i].g);
         DmxMaster.write(i*7+7, leds[i].b);
     }
-
-    cmdPoll();
-
 }
 
 void cmdSetting(int argc, char ** argv) {
@@ -357,10 +361,10 @@ void runLightning() {
             //Serial.println("[ltnng] Time to flash");
             flashCounter++;
             fill_solid(leds+ledstart,ledlen,CHSV(255, 0, 255/dimmer));
-            show_at_max_brightness_for_power();                       // Show a section of LED's
+            dmxBlit();
             delay(random8(4,10));                 // each flash only lasts 4-10 milliseconds. We will use delay() because the timing has to be tight. still will run shorter than 10ms.
             fill_solid(leds+ledstart,ledlen,CHSV(255,0,0));   // Clear the section of LED's
-            show_at_max_brightness_for_power();
+            dmxBlit();
             nextFlashDelay += 50+random8(100);               // shorter delay between strokes
         } else {
             Serial.println("[ltnng] Strike complete");
