@@ -3,7 +3,7 @@
 #include <Cmd.h>
 
 #define NUMPIXELS 23
-//#define DEBUG true
+#define DEBUG true
 #define FRAMERATE 60
 
 CRGB leds[NUMPIXELS];
@@ -151,11 +151,6 @@ void loop() {
         case 3:
             runFill(color);
             break;
-        case 7:
-        case 8:
-        case 9:
-            runConfetti();
-            break;
         case 4:
             runDotBeat();
             break;
@@ -164,6 +159,11 @@ void loop() {
             break;
         case 6:
             runFastCirc();
+            break;
+        case 7:
+        case 8:
+        case 9:
+            runConfetti();
             break;
         case 10:
             runRotatingRainbow();
@@ -194,18 +194,19 @@ void loop() {
 }
 
 void dmxBlit() {
+    CRGB temp;
     for ( int i=0; i<NUMPIXELS; i++ ) {
         //DmxMaster.write(i*7+1, brightness[i]);
         DmxMaster.write(i*7+1, 255); //always 100% brightness
-        leds[i].nscale8_video(brightness[i]); //but scale the rgb instead
+        temp = leds[i];
+        temp.nscale8_video(brightness[i]); //but scale the rgb instead
+        DmxMaster.write(i*7+5, temp.r);
+        DmxMaster.write(i*7+6, temp.g);
+        DmxMaster.write(i*7+7, temp.b);
 
         DmxMaster.write(i*7+2, strobe[i]);
         DmxMaster.write(i*7+3, voice[i]);
         DmxMaster.write(i*7+4, speed[i]);
-
-        DmxMaster.write(i*7+5, leds[i].r);
-        DmxMaster.write(i*7+6, leds[i].g);
-        DmxMaster.write(i*7+7, leds[i].b);
     }
 }
 
