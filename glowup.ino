@@ -195,7 +195,10 @@ void loop() {
 
 void dmxBlit() {
     for ( int i=0; i<NUMPIXELS; i++ ) {
-        DmxMaster.write(i*7+1, brightness[i]);
+        //DmxMaster.write(i*7+1, brightness[i]);
+        DmxMaster.write(i*7+1, 255); //always 100% brightness
+        leds[i].nscale8_video(brightness[i]); //but scale the rgb instead
+
         DmxMaster.write(i*7+2, strobe[i]);
         DmxMaster.write(i*7+3, voice[i]);
         DmxMaster.write(i*7+4, speed[i]);
