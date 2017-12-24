@@ -260,7 +260,7 @@ void runFullPalette() {
 }
 void runRotatingPalette() {
     uint8_t beatA = beat8(30); //, 0, 255); //was beatsin8
-    fill_palette(leds, NUMPIXELS, beatA, 6, currentPalette, 255, LINEARBLEND);
+    fill_palette(leds, NUMPIXELS, beatA, 18, currentPalette, 255, LINEARBLEND);
 }
 
 void runConfetti() {
