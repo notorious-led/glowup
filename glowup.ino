@@ -183,7 +183,7 @@ void loop() {
             runRotatingPalette();
             break;
         default:
-            Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
+            //Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
             delay(10);
     }
 
