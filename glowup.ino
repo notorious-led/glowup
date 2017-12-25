@@ -393,6 +393,8 @@ void runLightning() {
             nextFlashDelay = random8(frequency)*100;          // delay between strikes
         }
         lastFlashTime = millis();
+    } else {
+        runFill(); //blackout
     }
 }
 
