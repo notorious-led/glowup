@@ -280,8 +280,8 @@ void runConfetti() {
     EVERY_N_MILLISECONDS(5000) {
         switch(effect) {
             case 7: thisinc=1; thishue=192; thissat=255; thisfade=16; huediff=256; break;  // You can change values here, one at a time , or altogether.
-            case 8: thisinc=2; thishue=128; thisfade=8; huediff=64; break;
-            case 9: thisinc=1; thishue=random16(255); thisfade=4; huediff=16; break;      // Only gets called once, and not continuously for the next several seconds. Therefore, no rainbows.
+            case 8: thisinc=2; thishue=128; thissat=100; thisfade=8; huediff=64; break;
+            case 9: thisinc=1; thishue=random16(255); thissat=100; thisfade=8; huediff=16; break;      // Only gets called once, and not continuously for the next several seconds. Therefore, no rainbows.
         }
     }
 
@@ -309,7 +309,7 @@ void runFastCirc() {
             leds[i] = color;
         }
     }
-    fadeToBlackBy(leds, NUMPIXELS, 24);
+    fadeToBlackBy(leds, NUMPIXELS, 36);
 }
 
 void runEaseMe() {
