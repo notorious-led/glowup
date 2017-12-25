@@ -182,6 +182,9 @@ void loop() {
         case 16:
             runRotatingPalette();
             break;
+        case 17:
+            runPulsingPalette();
+            break;
         default:
             //Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
             delay(10);
