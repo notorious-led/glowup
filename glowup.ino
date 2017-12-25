@@ -160,15 +160,15 @@ void loop() {
         case 6:
             runFastCirc();
             break;
-        case 7:
-        case 8:
-        case 9:
+        case 7: //Multicolor confetti
+        case 8: //Broken confetti?
+        case 9: //White confetti
             runConfetti();
             break;
-        case 10:
+        case 10: //slow
+        case 11: //fast
             runRotatingRainbow();
             break;
-        case 11:
         case 12:
         case 13:
             runJuggle();
@@ -326,20 +326,25 @@ void runEaseMe() {
 }
 
 void runRotatingRainbow() {
-    fill_rainbow(leds, NUMPIXELS, count, 5);
-    count += 2;
+    fill_rainbow(leds, NUMPIXELS, count, 32);
+    if ( effect == 11 ) {
+        count += 3;
+    } else { 
+        count += 1;
+    }
 }
 
 void runJuggle() {
     switch(effect) {
-            case 11: numdots = 1; basebeat = 20; hueinc = 16; faderate = 2; thishue = 0; break;                  // You can change values here, one at a time , or altogether.
-            case 12: numdots = 4; basebeat = 10; hueinc = 16; faderate = 8; thishue = 128; break;
-            case 13: numdots = 8; basebeat =  3; hueinc =  0; faderate = 8; thishue=random8(); break;           // Only gets called once, and not continuously for the next several seconds. Therefore, no rainbows.
+            case 12: numdots = 1; basebeat = 20; hueinc = 16; faderate = 2; thishue = 0; break;                  // You can change values here, one at a time , or altogether.
+            case 13: numdots = 4; basebeat = 10; hueinc = 16; faderate = 8; thishue = 128; break;
     }
     curhue = thishue;                                           // Reset the hue values.
     fadeToBlackBy(leds, NUMPIXELS, faderate);
     for( int i = 0; i < numdots; i++) {
-        leds[beatsin16(basebeat+i+numdots,0,NUMPIXELS)] += CHSV(curhue, thissat, thisbri);   //beat16 is a FastLED 3.1 function
+        int temp = beatsin16(basebeat+i+numdots,0,NUMPIXELS);
+        if ( temp >= NUMPIXELS ) temp = NUMPIXELS-1;
+        leds[temp] += CHSV(curhue, thissat, thisbri);   //beat16 is a FastLED 3.1 function
         curhue += hueinc;
     }
 }
