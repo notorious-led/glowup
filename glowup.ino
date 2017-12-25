@@ -266,6 +266,15 @@ void runRotatingPalette() {
     uint8_t beatA = beat8(30); //, 0, 255); //was beatsin8
     fill_palette(leds, NUMPIXELS, beatA, 18, currentPalette, 255, LINEARBLEND);
 }
+void runPulsingPalette() {
+    uint8_t beatA = beat8(60);
+    uint8_t beatB = beat8(77);
+    if ( beatA < 10 ) {
+        fill_palette(leds, NUMPIXELS, beatB, 0, RainbowColors_p, 255, NOBLEND);
+    } else {
+        fadeToBlackBy(leds, NUMPIXELS, 10);
+    }
+}
 
 void runConfetti() {
     EVERY_N_MILLISECONDS(5000) {
