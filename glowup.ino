@@ -198,6 +198,7 @@ void loop() {
             break;
         case 19:
             runBreathe();
+            break;
         default:
             //Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
             delay(10);
