@@ -18,7 +18,7 @@ unsigned long frameCount;
 unsigned long timer1s;
 
 //EFFECT SHIT
-byte effect = 0;
+byte effect = 2;
 byte site;
 CRGB color = CRGB::Teal;
 CRGB nextColor = CRGB::Black;
@@ -203,7 +203,7 @@ void loop() {
             runAlternate();
             break;
         default:
-            //Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
+            Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
             delay(10);
     }
 
