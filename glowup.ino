@@ -139,8 +139,10 @@ void loop() {
 		//time to do our every-second tasks
 		#ifdef DEBUG
 		double fr = (double)frameCount/((double)(millis()-timer1s)/1000);
-		Serial.print("[Hbeat] Site "); Serial.print(site); 
-        Serial.print(" FRAME RATE: "); Serial.print(fr);
+		Serial.print("[Hbeat] Site="); Serial.print(site); 
+        Serial.print(" bright="); Serial.print(brightness[0]);
+        Serial.print(" effect="); Serial.print(effect);
+        Serial.print(" fps="); Serial.print(fr);
 		Serial.println();
 		#endif /*DEBUG*/
 
