@@ -362,14 +362,17 @@ void runRotatingRainbow() {
 void runJuggle() {
     switch(effect) {
             case 12: numdots = 1; basebeat = 20; hueinc = 16; faderate = 2; thishue = 0; break;                  // You can change values here, one at a time , or altogether.
-            case 13: numdots = 4; basebeat = 10; hueinc = 16; faderate = 8; thishue = 128; break;
+            case 13: numdots = 4; basebeat = 10; hueinc = 16; faderate = 16; thishue = 128; break;
     }
     curhue = thishue;                                           // Reset the hue values.
     fadeToBlackBy(leds, NUMPIXELS, faderate);
     for( int i = 0; i < numdots; i++) {
         int temp = beatsin16(basebeat+i+numdots,0,NUMPIXELS);
         if ( temp >= NUMPIXELS ) temp = NUMPIXELS-1;
-        leds[temp] += CHSV(curhue, thissat, thisbri);   //beat16 is a FastLED 3.1 function
+        switch(effect) {
+            case 12: leds[temp] = color; break;
+            default: leds[temp] += CHSV(curhue, thissat, thisbri); break;
+        }
         curhue += hueinc;
     }
 }
