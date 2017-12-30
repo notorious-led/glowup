@@ -292,14 +292,15 @@ void runConfetti() {
     EVERY_N_MILLISECONDS(5000) {
         switch(effect) {
             case 7: thisinc=1; thishue=192; thissat=255; thisfade=16; huediff=256; break;  // You can change values here, one at a time , or altogether.
-            case 8: thisinc=2; thishue=128; thissat=100; thisfade=8; huediff=64; break;
-            case 9: thisinc=1; thishue=random16(255); thissat=100; thisfade=8; huediff=16; break;      // Only gets called once, and not continuously for the next several seconds. Therefore, no rainbows.
+            case 8: thisinc=2; thishue=128; thissat=100; thisfade=24; huediff=64; break;
+            case 9: thisinc=4; thishue=random16(255); thissat=125; thisfade=40; huediff=64; break;      // Only gets called once, and not continuously for the next several seconds. Therefore, no rainbows.
         }
     }
 
     fadeToBlackBy(leds, NUMPIXELS, thisfade);                    // Low values = slower fade.
-    int pos = random16(NUMPIXELS);                               // Pick an LED at random.
-    leds[pos] += CHSV((thishue + random16(huediff))/4 , thissat, thisbri);  // I use 12 bits for hue so that the hue increment isn't too quick.
+    for ( int i=effect; i>=7; i-- ) {
+        leds[random16(NUMPIXELS)] += CHSV((thishue + random16(huediff))/4 , thissat, thisbri);  // I use 12 bits for hue so that the hue increment isn't too quick.
+    }
     thishue = thishue + thisinc;                                // It increments here.
 }
 
