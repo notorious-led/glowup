@@ -109,6 +109,7 @@ void setup() {
     Serial.println("Doing fastled shit");
     FastLED.setMaxRefreshRate(FRAMERATE);
     leds[0] = CRGB::Green;
+    FastLED.addLeds<NEOPIXEL, 10>(leds, NUMPIXELS);
 
     Serial.println("Starting command line");
     cmdInit(&Serial);
@@ -226,6 +227,7 @@ void cmdSetting(int argc, char ** argv) {
             switch(argv[0][0]) {
                 case 'b':
                     brightness[i] = x;
+                    FastLED.setBrightness(x);
                     break;
                 case 'f':
                     strobe[i] = x;
