@@ -6,6 +6,7 @@
 #define NUMPIXELS 23
 #define DEBUG true
 #define FRAMERATE 60
+#define WALLSIZE 6
 
 CRGB leds[NUMPIXELS];
 uint8_t brightness[NUMPIXELS];
@@ -192,6 +193,9 @@ void loop() {
         case 17:
             runPulsingPalette();
             break;
+        case 18:
+            runCylon();
+            break;
         default:
             //Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
             delay(10);
@@ -368,6 +372,22 @@ void runJuggle() {
         curhue += hueinc;
     }
 }
+
+void runCylon() {
+    if ( count >= WALLSIZE-1 ) {
+        thisdir = -1;
+    } else if ( count == 0 ) {
+        thisdir = 1;
+    }
+    EVERY_N_MILLISECONDS(1000/(WALLSIZE*2-2)) {
+        //runFill();
+        leds[count] = color;
+        count += thisdir;
+    }
+    fadeToBlackBy(leds, NUMPIXELS, 32);
+
+}
+
 
 void runLightning() {
     //Serial.print("[ltnng] entered. millis()="); Serial.print(millis()); Serial.print(" lastFlashTime="); Serial.print(lastFlashTime); Serial.print(" nextFlashDelay="); Serial.println(nextFlashDelay);
