@@ -43,7 +43,7 @@ DEFINE_GRADIENT_PALETTE( christmas_gp ) {
     0,   0,  0,  0
 };
 
-CRGBPalette16 currentPalette = christmas_gp;
+CRGBPalette16 currentPalette = CloudColors_p;
 
 //BlinkOne/SolidOne
 uint8_t offset = 0; //how many to skip when writing the LED.
