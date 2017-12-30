@@ -80,6 +80,9 @@ unsigned int dimmer = 1;
 uint8_t ledstart;                                             // Starting location of a flash
 uint8_t ledlen;                                               // Length of a flash
 
+//Countdown shit
+unsigned long midnight = 0;
+bool pulseNow = false;
 
 
 void setup() {
@@ -120,6 +123,8 @@ void setup() {
     cmdAdd("v", cmdSetting);
     cmdAdd("s", cmdSetting);
     cmdAdd("c", cmdColor);
+    cmdAdd("m", cmdMillis);
+    cmdAdd("count", cmdCount);
 
     Serial.println("Init done!");
 
@@ -128,7 +133,6 @@ void setup() {
 void loop() {
 
     frameCount++;
-    FastLED.show(); //We literally just do this so that it will limit our frame rate
 
 	EVERY_N_MILLISECONDS(1000) {
 
@@ -207,7 +211,12 @@ void loop() {
             delay(10);
     }
 
-    dmxBlit();
+    if ( midnight > 0 ) {
+        doCountdown();
+    }
+
+    dmxBlit(); //This actually shows to the DMX "strip"
+    FastLED.show(); //We literally just do this so that it will limit our frame rate
 
     cmdPoll();
 
@@ -242,6 +251,45 @@ void splitForTimesBuilding() {
     //Now we fill in the rest of the strip with the values we can steal from 2-7.
     for ( int i=2+WALLSIZE; i < NUMPIXELS; i++ ) {
         leds[i] = leds[i%WALLSIZE];
+    }
+}
+
+void doCountdown() {
+    unsigned long now = millis();
+    unsigned long delta = midnight - now;
+
+    if ( now > midnight ) {
+        //It's the new year.
+        if ( now < (midnight+500) ) {
+            runFill(CRGB::White); //fill the strip with white
+        } else if ( now > (midnight+10000) ) {
+            effect = 7; //less intense confetti
+            midnight = 0; //stop the counting shit.
+        } else {
+            effect = 9; //go to some intense confetti
+        }
+    } else if ( (delta) > 10000 ) {
+        effect = 6; //FastCirc while we wait
+    } else {
+        //We're within 10 seconds.
+        effect = 17; //Pulsing rainbow
+        if ( ((delta+100) % 1000) < 100 ) {
+            //we're within 100 ms of a second-rollover having just happened. (Sorry I hate both english and math)
+            pulseNow = true;
+            Serial.print("[count] delta="); Serial.print(delta); Serial.print(" millis="); Serial.println(now);
+        }
+
+        if ( (delta) < 5200 ) {
+            effect = 11; //REALLY fast rainbow
+            if ( delta < 5000 ) leds[0] = CRGB::Black;
+            if ( delta < 4000 ) leds[5] = CRGB::Black;
+            if ( delta < 3000 ) leds[1] = CRGB::Black;
+            if ( delta < 2000 ) leds[4] = CRGB::Black;
+            if ( delta < 1000 ) leds[2] = CRGB::Black;
+
+            splitForTimesBuilding(); //replicate to other sides of the building.
+            leds[NUMPIXELS-1] = CRGB::Black; leds[0] = CRGB::Black; leds[1] = CRGB::Black; //turn off the weird ones
+        }
     }
 }
 
@@ -281,6 +329,14 @@ void cmdEffect(int argc, char ** argv) {
     }
     Serial.println(effect);
 }
+void cmdMillis(int argc, char ** argv) {
+    Serial.print("millis(): "); Serial.println(millis());
+}
+void cmdCount(int argc, char ** argv) {
+    Serial.print("millis(): "); Serial.println(millis());
+    midnight = millis() + ( 12 * 1000 );
+    Serial.print("Midnight: "); Serial.println(midnight);
+}
 
 
 void runFill(CRGB dest) {
@@ -300,10 +356,11 @@ void runRotatingPalette() {
     fill_palette(leds, NUMPIXELS, beatA, 18, currentPalette, 255, LINEARBLEND);
 }
 void runPulsingPalette() {
-    uint8_t beatA = beat8(60);
+    uint8_t beatA = beat8(50);
     uint8_t beatB = beat8(77);
-    if ( beatA < 10 ) {
+    if ( pulseNow || ( midnight == 0 && beatA < 10 ) ) {
         fill_palette(leds, NUMPIXELS, beatB, 0, RainbowColors_p, 255, NOBLEND);
+        pulseNow = false;
     } else {
         fadeToBlackBy(leds, NUMPIXELS, 10);
     }
@@ -374,7 +431,7 @@ void runEaseMe() {
 void runRotatingRainbow() {
     fill_rainbow(leds, NUMPIXELS, count, 32);
     if ( effect == 11 ) {
-        count += 3;
+        count += 8;
     } else { 
         count += 1;
     }
