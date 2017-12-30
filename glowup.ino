@@ -1,4 +1,4 @@
-#include <DmxMaster.h>
+#include <DmxSimple.h>
 #include <FastLED.h>
 #include <Cmd.h>
 #include <EEPROM.h>
@@ -91,15 +91,15 @@ void setup() {
     delay(500);
 
     Serial.println("Starting dmx");
-    DmxMaster.usePin(3);
-    DmxMaster.write(1, 5); DmxMaster.write(5, 255); //first light dim red
+    DmxSimple.usePin(3);
+    DmxSimple.write(1, 5); DmxSimple.write(5, 255); //first light dim red
 
     Serial.print("Initializing "); Serial.print(NUMPIXELS); Serial.println(" lights");
     for ( int i=0; i<NUMPIXELS; i++ ) {
-        DmxMaster.write(i*7+1, 255); //100% brightness
-        DmxMaster.write(i*7+2, 0); //no strobe
-        DmxMaster.write(i*7+3, 0); //no effect
-        DmxMaster.write(i*7+4, 0); //no speed
+        DmxSimple.write(i*7+1, 255); //100% brightness
+        DmxSimple.write(i*7+2, 0); //no strobe
+        DmxSimple.write(i*7+3, 0); //no effect
+        DmxSimple.write(i*7+4, 0); //no speed
     }
 
     Serial.println("Setting brightness");
@@ -196,6 +196,8 @@ void loop() {
         case 18:
             runCylon();
             break;
+        case 19:
+            runBreathe();
         default:
             //Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
             delay(10);
@@ -210,17 +212,17 @@ void loop() {
 void dmxBlit() {
     CRGB temp;
     for ( int i=0; i<NUMPIXELS; i++ ) {
-        //DmxMaster.write(i*7+1, brightness[i]);
-        DmxMaster.write(i*7+1, 255); //always 100% brightness
+        //DmxSimple.write(i*7+1, brightness[i]);
+        DmxSimple.write(i*7+1, 255); //always 100% brightness
         temp = leds[i];
         temp.nscale8_video(brightness[i]); //but scale the rgb instead
-        DmxMaster.write(i*7+5, temp.r);
-        DmxMaster.write(i*7+6, temp.g);
-        DmxMaster.write(i*7+7, temp.b);
+        DmxSimple.write(i*7+5, temp.r);
+        DmxSimple.write(i*7+6, temp.g);
+        DmxSimple.write(i*7+7, temp.b);
 
-        DmxMaster.write(i*7+2, strobe[i]);
-        DmxMaster.write(i*7+3, voice[i]);
-        DmxMaster.write(i*7+4, speed[i]);
+        DmxSimple.write(i*7+2, strobe[i]);
+        DmxSimple.write(i*7+3, voice[i]);
+        DmxSimple.write(i*7+4, speed[i]);
     }
 }
 
@@ -448,4 +450,8 @@ void runSolidOne() {
     leds[offset] = color;
 }
 
+void runBreathe(){
+    runFill(color);
+    fadeToBlackBy(leds, NUMPIXELS, beatsin8(15));
+}
 
