@@ -199,6 +199,9 @@ void loop() {
         case 19:
             runBreathe();
             break;
+        case 20:
+            runAlternate();
+            break;
         default:
             //Serial.print("[blink] Unknown effect selected: "); Serial.println(effect);
             delay(10);
@@ -469,5 +472,19 @@ void runSolidOne() {
 void runBreathe(){
     runFill(color);
     fadeToBlackBy(leds, NUMPIXELS, beatsin8(15));
+}
+
+void runAlternate(){
+    runFill(color);                                       //pick a color
+    CRGB color2 = CRGB(color.g, color.b, color.r);        //and this is some somewhat opposite color
+                      
+    for(int i=0; i<NUMPIXELS; i++){                  
+      if (i%2 ==1) {                                       //for the odd ones
+        leds[i]=color2;                                    //make the odd LEDS some opposite color
+        leds[i].fadeToBlackBy(beatsin8(10, 0));     //fade a sine wave, starting at theta = 0
+      }else{
+       leds[i].fadeToBlackBy(beatsin8(10, 0, 255, 0, 255/2));   //fade another sine wave, but starting at 
+      }
+    }
 }
 
