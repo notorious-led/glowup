@@ -465,11 +465,12 @@ void runCylon() {
         thisdir = 1;
     }
     EVERY_N_MILLISECONDS(1000/(WALLSIZE*2-2)) {
+        runFill(); //XXX we should be able to fade here but i'm too tired to work it out today
         leds[count] = color;
         count += thisdir;
         splitForTimesBuilding();
     }
-    fadeToBlackBy(leds, NUMPIXELS, 32);
+    //fadeToBlackBy(leds, NUMPIXELS, 32);
 
 }
 
