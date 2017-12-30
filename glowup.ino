@@ -1,6 +1,7 @@
 #include <DmxMaster.h>
 #include <FastLED.h>
 #include <Cmd.h>
+#include <EEPROM.h>
 
 #define NUMPIXELS 23
 #define DEBUG true
@@ -17,6 +18,7 @@ unsigned long timer1s;
 
 //EFFECT SHIT
 byte effect = 0;
+byte site;
 CRGB color = CRGB::Teal;
 CRGB nextColor = CRGB::Black;
 
@@ -82,6 +84,9 @@ uint8_t ledlen;                                               // Length of a fla
 void setup() {
     Serial.begin(9600);
     Serial.println("glowup");
+
+    site = EEPROM.read(0);
+    Serial.print("This is site "); Serial.println(site);
     delay(500);
 
     Serial.println("Starting dmx");
@@ -128,7 +133,8 @@ void loop() {
 		//time to do our every-second tasks
 		#ifdef DEBUG
 		double fr = (double)frameCount/((double)(millis()-timer1s)/1000);
-		Serial.print("[Hbeat] FRAME RATE: "); Serial.print(fr);
+		Serial.print("[Hbeat] Site "); Serial.print(site); 
+        Serial.print(" FRAME RATE: "); Serial.print(fr);
 		Serial.println();
 		#endif /*DEBUG*/
 
