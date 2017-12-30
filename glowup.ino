@@ -459,6 +459,7 @@ void runJuggle() {
 
 void runCylon() {
     if ( count >= WALLSIZE-1 ) {
+        count = WALLSIZE-1;
         thisdir = -1;
     } else if ( count == 0 ) {
         thisdir = 1;
