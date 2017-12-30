@@ -227,6 +227,21 @@ void dmxBlit() {
     }
 }
 
+void splitForTimesBuilding() {
+    //First we move leds 0-5 to leds 2-7. This is the side of the building facing the SiP parking lot
+    for ( int i=2+WALLSIZE-1; i>=2; i-- ) {
+        leds[i] = leds[i-2];
+    }
+    //Then we fix LEDs 0 and 1 to be the same as their incremented counterparts.
+    for ( int i=0; i<=1; i++ ) {
+        leds[i] = leds[i+WALLSIZE];
+    }
+    //Now we fill in the rest of the strip with the values we can steal from 2-7.
+    for ( int i=2+WALLSIZE; i < NUMPIXELS; i++ ) {
+        leds[i] = leds[i%WALLSIZE];
+    }
+}
+
 void cmdSetting(int argc, char ** argv) {
     if ( argc > 1 ) {
         uint8_t x = String(argv[1]).toInt();
@@ -387,9 +402,9 @@ void runCylon() {
         thisdir = 1;
     }
     EVERY_N_MILLISECONDS(1000/(WALLSIZE*2-2)) {
-        //runFill();
         leds[count] = color;
         count += thisdir;
+        splitForTimesBuilding();
     }
     fadeToBlackBy(leds, NUMPIXELS, 32);
 
