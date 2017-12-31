@@ -1,7 +1,7 @@
 #include <DmxSimple.h>
 #include <FastLED.h>
 #include <Cmd.h>
-#include <EEPROM.h>
+#include <NotoriousSync.h>
 
 #define NUMPIXELS 23
 #define DEBUG true
@@ -19,7 +19,6 @@ unsigned long timer1s;
 
 //EFFECT SHIT
 byte effect = 2;
-byte site;
 CRGB color = CRGB::Teal;
 CRGB nextColor = CRGB::Black;
 
@@ -83,15 +82,12 @@ uint8_t ledlen;                                               // Length of a fla
 //Countdown shit
 unsigned long midnight = 0;
 bool pulseNow = false;
+NotoriousSync sync;
 
 
 void setup() {
     Serial.begin(9600);
     Serial.println("glowup");
-
-    site = EEPROM.read(0);
-    Serial.print("This is site "); Serial.println(site);
-    delay(500);
 
     Serial.println("Starting dmx");
     DmxSimple.usePin(3);
@@ -120,11 +116,12 @@ void setup() {
     cmdAdd("e", cmdEffect);
     cmdAdd("b", cmdSetting);
     cmdAdd("f", cmdSetting);
-    cmdAdd("v", cmdSetting);
-    cmdAdd("s", cmdSetting);
+    //cmdAdd("v", cmdSetting);
+    //cmdAdd("s", cmdSetting);
     cmdAdd("c", cmdColor);
-    cmdAdd("m", cmdMillis);
     cmdAdd("count", cmdCount);
+    cmdAdd("rtt", cmdRtt);
+    cmdAdd("sched", cmdSchedule);
 
     Serial.println("Init done!");
 
@@ -139,8 +136,7 @@ void loop() {
 		//time to do our every-second tasks
 		#ifdef DEBUG
 		double fr = (double)frameCount/((double)(millis()-timer1s)/1000);
-		Serial.print("[Hbeat] Site="); Serial.print(site); 
-        Serial.print(" bright="); Serial.print(brightness[0]);
+		Serial.print("[Hbeat] bright="); Serial.print(brightness[0]);
         Serial.print(" effect="); Serial.print(effect);
         Serial.print(" fps="); Serial.print(fr);
 		Serial.println();
@@ -331,15 +327,20 @@ void cmdEffect(int argc, char ** argv) {
     }
     Serial.println(effect);
 }
-void cmdMillis(int argc, char ** argv) {
-    Serial.print("millis(): "); Serial.println(millis());
-}
 void cmdCount(int argc, char ** argv) {
     Serial.print("millis(): "); Serial.println(millis());
     midnight = millis() + ( 12 * 1000 );
     Serial.print("Midnight: "); Serial.println(midnight);
 }
-
+void cmdRtt(int argc, char ** argv) {
+    sync.setRtt(String(argv[1]).toInt());
+    Serial.print("rtt = "); Serial.println(sync.getRtt());
+}
+void cmdSchedule(int argc, char ** argv) {
+    midnight = millis() + ( String(argv[1]).toInt() ) - ( sync.getRtt() / 2 );
+    Serial.print("[nsync] It's "); Serial.print(millis()); 
+    Serial.print(" - event scheduled for "); Serial.println(midnight);
+}
 
 void runFill(CRGB dest) {
     fill_solid(leds, NUMPIXELS, dest);
