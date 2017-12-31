@@ -103,7 +103,7 @@ void setup() {
 
     Serial.println("Setting brightness");
     for ( int i=0; i<NUMPIXELS; i++ ) {
-        brightness[i] = 100;
+        brightness[i] = 0; //While debugging it's 0. usually it's 100
     }
 
     Serial.println("Doing fastled shit");
@@ -122,6 +122,7 @@ void setup() {
     cmdAdd("count", cmdCount);
     cmdAdd("rtt", cmdRtt);
     cmdAdd("sched", cmdSchedule);
+    cmdAdd("reboot", cmdReboot);
 
     Serial.println("Init done!");
 
@@ -340,6 +341,10 @@ void cmdSchedule(int argc, char ** argv) {
     midnight = millis() + ( String(argv[1]).toInt() ) - ( sync.getRtt() / 2 );
     Serial.print("[nsync] It's "); Serial.print(millis()); 
     Serial.print(" - event scheduled for "); Serial.println(midnight);
+}
+void cmdReboot(int argc, char ** argv) {
+    delay(String(argv[1]).toInt() - (sync.getRtt() / 2));
+    asm volatile ("  jmp 0");
 }
 
 void runFill(CRGB dest) {
