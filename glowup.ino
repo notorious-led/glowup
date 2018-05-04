@@ -6,7 +6,9 @@
 #define NUMPIXELS 23
 #define DEBUG true
 #define FRAMERATE 60
-#define WALLSIZE 6
+#define WALLSIZE 8
+#define BUTTON_ADVANCE 6
+#define BUTTON_STOP A2
 
 CRGB leds[NUMPIXELS];
 uint8_t brightness[NUMPIXELS];
@@ -103,7 +105,7 @@ void setup() {
 
     Serial.println("Setting brightness");
     for ( int i=0; i<NUMPIXELS; i++ ) {
-        brightness[i] = 0; //While debugging it's 0. usually it's 100
+        brightness[i] = 100; //While debugging it's 0. usually it's 100
     }
 
     Serial.println("Doing fastled shit");
@@ -124,6 +126,10 @@ void setup() {
     cmdAdd("sched", cmdSchedule);
     cmdAdd("reboot", cmdReboot);
 
+    Serial.println("Starting butan");
+    pinMode(BUTTON_ADVANCE, INPUT_PULLUP);
+    pinMode(BUTTON_STOP, INPUT_PULLUP);
+
     Serial.println("Init done!");
 
 }
@@ -132,6 +138,9 @@ void loop() {
 
     frameCount++;
 
+    if ( ! digitalRead(BUTTON_STOP) ) {
+		effect = 15;
+    }
 	EVERY_N_MILLISECONDS(1000) {
 
 		//time to do our every-second tasks
@@ -149,6 +158,13 @@ void loop() {
 		if ( effect <= 2 && millis() < 10000 ) {
 			effect = 16;
 		}
+
+        if ( ! digitalRead(BUTTON_ADVANCE) ) {
+            effect++;
+            if ( effect > 20 ) {
+                effect = 3;
+            }
+        }
 
 	}
 
