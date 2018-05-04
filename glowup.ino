@@ -371,7 +371,8 @@ void runFill() {
 }
 
 void runFullPalette() {
-    uint8_t beatA = beat8(30); //, 0, 255); //was beatsin8
+    //uint8_t beatA = beat8(30); //, 0, 255); //was beatsin8
+    uint8_t beatA = 0; //static
 
     fill_palette(leds, NUMPIXELS, beatA, 0, currentPalette, 255, LINEARBLEND);
 }
