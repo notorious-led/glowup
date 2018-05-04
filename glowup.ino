@@ -37,14 +37,14 @@ DEFINE_GRADIENT_PALETTE( flame_gp ) {
   255, 252, 42,  1
 };
 DEFINE_GRADIENT_PALETTE( christmas_gp ) {
-    0,   0,  0,  0,
-  127,   0,255,  0,
-    0,   0,  0,  0,
-  255, 255,  0,  0, 
-    0,   0,  0,  0
+    0, 0xef, 0x51, 0x38,
+  128, 0xf1, 0xbf, 0x4e,
+  148, 0x58, 0xb4, 0x9b,
+  158, 0x10, 0xa0, 0xc2,
+  192,   0,  0,  0
 };
 
-CRGBPalette16 currentPalette = CloudColors_p;
+CRGBPalette16 currentPalette = christmas_gp;
 
 //BlinkOne/SolidOne
 uint8_t offset = 0; //how many to skip when writing the LED.
@@ -377,7 +377,7 @@ void runFullPalette() {
     fill_palette(leds, NUMPIXELS, beatA, 0, currentPalette, 255, LINEARBLEND);
 }
 void runRotatingPalette() {
-    uint8_t beatA = beat8(30); //, 0, 255); //was beatsin8
+    uint8_t beatA = beat8(3); //, 0, 255); //was beatsin8
     fill_palette(leds, NUMPIXELS, beatA, 18, currentPalette, 255, LINEARBLEND);
 }
 void runPulsingPalette() {
